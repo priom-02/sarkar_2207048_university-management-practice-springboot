@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --warning: #f59e0b;
+      --radius: 10px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand span.sub {
+      color: var(--text-main);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .role-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .role-ADMIN { background: #f3e8ff; color: #7e22ce; }
+    .role-TEACHER { background: #dcfce7; color: #15803d; }
+    .role-STUDENT { background: #dbeafe; color: #1d4ed8; }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 0.85rem;
+    }
+    .user-name { font-weight: 600; }
+    .user-email { color: var(--text-muted); font-size: 0.75rem; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-secondary {
+      background: #fff;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    .btn-danger { background: #fee2e2; color: var(--danger); border-color: #fecaca; }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    .btn-sm {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.78rem;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Login Card */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 140px);
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .login-card p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      padding: 0.6rem 0.85rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .demo-box {
+      margin-top: 1.5rem;
+      background: #f8fafc;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .demo-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.35rem;
+    }
+    .demo-btn:hover { background: #cbd5e1; }
+
+    /* Dashboard Layout */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .panel-title h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .panel-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Tables */
+    .table-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fdfdfe; }
+
+    .action-cell {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0.5rem;
+      opacity: 0.4;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-lg);
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-header h3 { font-size: 1.15rem; font-weight: 700; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: #0f172a;
+      color: #fff;
+      padding: 0.75rem 1.1rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-width: 260px;
+      animation: slideUp 0.25s ease;
+    }
+    .toast.success { background: #065f46; border-left: 4px solid var(--success); }
+    .toast.error { background: #7f1d1d; border-left: 4px solid var(--danger); }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Utilities */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <a href="#" class="brand">
+      🎓 <span>UniManager <span class="sub">Portal</span></span>
+    </a>
+
+    <div id="navUserArea" class="user-pill hidden">
+      <div class="user-info">
+        <span id="navUserName" class="user-name">User Name</span>
+        <span id="navUserEmail" class="user-email">user@university.com</span>
+      </div>
+      <span id="navUserRole" class="role-badge role-ADMIN">ADMIN</span>
+      <button id="btnLogout" class="btn btn-secondary btn-sm" onclick="handleLogout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- 1. LOGIN SCREEN -->
+    <div id="loginView" class="login-wrapper">
+      <div class="login-card">
+        <h2>Sign In</h2>
+        <p class="subtitle">Enter your credentials to access the university system</p>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="admin@university.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            Sign In
+          </button>
+        </form>
+
+        <div class="demo-box">
+          <strong>Default Admin Credentials:</strong><br>
+          Email: <code>admin@university.com</code><br>
+          Password: <code>AdminPassword123</code><br>
+          <button class="demo-btn" onclick="fillAdminDemo()">Autofill Admin</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DASHBOARD SCREEN -->
+    <div id="dashboardView" class="hidden">
+
+      <!-- Navigation Tabs (Filtered dynamically by role) -->
+      <div class="tabs-nav">
+        <button id="tabBtnStudents" class="tab-btn active" onclick="switchTab('students')">Students</button>
+        <button id="tabBtnTeachers" class="tab-btn" onclick="switchTab('teachers')">Teachers</button>
+        <button id="tabBtnAdmins" class="tab-btn" onclick="switchTab('admins')">Administrators</button>
+      </div>
+
+      <!-- STUDENTS TAB PANEL -->
+      <section id="panelStudents" class="tab-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <h3>Student Directory</h3>
+            <p>Manage enrolled students and view their academic departments</p>
+          </div>
+          <div class="panel-actions">
+            <input type="text" id="searchStudents" class="form-control" placeholder="Search students..." oninput="filterTable('tableStudents', this.value)">
+            <button class="btn btn-primary" onclick="openStudentModal()">➕ Add Student</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table id="tableStudents">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr><td colspan="6" class="empty-state">Loading students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TEACHERS TAB PANEL -->
+      <section id="panelTeachers" class="tab-panel hidden">
+        <div class="panel-header">
+          <div class="panel-title">
+            <h3>Faculty Directory</h3>
+            <p>Manage university professors, lecturers, and departments</p>
+          </div>
+          <div class="panel-actions">
+            <input type="text" id="searchTeachers" class="form-control" placeholder="Search faculty..." oninput="filterTable('tableTeachers', this.value)">
+            <button class="btn btn-primary" onclick="openTeacherModal()">➕ Add Teacher</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table id="tableTeachers">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Teacher ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="teachersTableBody">
+              <tr><td colspan="7" class="empty-state">Loading teachers...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ADMINS TAB PANEL -->
+      <section id="panelAdmins" class="tab-panel hidden">
+        <div class="panel-header">
+          <div class="panel-title">
+            <h3>System Administrators</h3>
+            <p>Authorized administrative accounts with full system privileges</p>
+          </div>
+          <div class="panel-actions">
+            <input type="text" id="searchAdmins" class="form-control" placeholder="Search admins..." oninput="filterTable('tableAdmins', this.value)">
+            <button class="btn btn-primary" onclick="openAdminModal()">➕ Add Admin</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table id="tableAdmins">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminsTableBody">
+              <tr><td colspan="4" class="empty-state">Loading admins...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- STUDENT MODAL -->
+  <div id="modalStudent" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="studentModalTitle">Add New Student</h3>
+        <button class="modal-close" onclick="closeModal('modalStudent')">&times;</button>
+      </div>
+      <form id="studentForm" onsubmit="submitStudentForm(event)">
+        <input type="hidden" id="studentDbId">
+        <div class="form-group">
+          <label for="studentCode">Student ID (Roll Number)</label>
+          <input type="text" id="studentCode" class="form-control" placeholder="e.g. STU101" required>
+        </div>
+        <div class="form-group">
+          <label for="studentName">Full Name</label>
+          <input type="text" id="studentName" class="form-control" placeholder="Alice Johnson" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email Address</label>
+          <input type="email" id="studentEmail" class="form-control" placeholder="alice@university.com" required>
+        </div>
+        <div class="form-group">
+          <label for="studentDept">Department</label>
+          <input type="text" id="studentDept" class="form-control" placeholder="Computer Science" required>
+        </div>
+        <div class="form-group" id="studentPasswordGroup">
+          <label for="studentPassword">Password <span id="studentPasswordHint" style="color:var(--text-muted);font-size:0.75rem;">(Required)</span></label>
+          <input type="password" id="studentPassword" class="form-control" placeholder="••••••••">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalStudent')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveStudent">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TEACHER MODAL -->
+  <div id="modalTeacher" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="teacherModalTitle">Add New Teacher</h3>
+        <button class="modal-close" onclick="closeModal('modalTeacher')">&times;</button>
+      </div>
+      <form id="teacherForm" onsubmit="submitTeacherForm(event)">
+        <input type="hidden" id="teacherDbId">
+        <div class="form-group">
+          <label for="teacherCode">Teacher ID</label>
+          <input type="text" id="teacherCode" class="form-control" placeholder="e.g. TCH101" required>
+        </div>
+        <div class="form-group">
+          <label for="teacherName">Full Name</label>
+          <input type="text" id="teacherName" class="form-control" placeholder="Dr. Robert Smith" required>
+        </div>
+        <div class="form-group">
+          <label for="teacherEmail">Email Address</label>
+          <input type="email" id="teacherEmail" class="form-control" placeholder="robert@university.com" required>
+        </div>
+        <div class="form-group">
+          <label for="teacherDept">Department</label>
+          <input type="text" id="teacherDept" class="form-control" placeholder="Physics" required>
+        </div>
+        <div class="form-group">
+          <label for="teacherDesignation">Designation</label>
+          <input type="text" id="teacherDesignation" class="form-control" placeholder="Associate Professor" required>
+        </div>
+        <div class="form-group" id="teacherPasswordGroup">
+          <label for="teacherPassword">Password <span id="teacherPasswordHint" style="color:var(--text-muted);font-size:0.75rem;">(Required)</span></label>
+          <input type="password" id="teacherPassword" class="form-control" placeholder="••••••••">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalTeacher')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveTeacher">Save Teacher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN MODAL -->
+  <div id="modalAdmin" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="adminModalTitle">Add New Admin</h3>
+        <button class="modal-close" onclick="closeModal('modalAdmin')">&times;</button>
+      </div>
+      <form id="adminForm" onsubmit="submitAdminForm(event)">
+        <input type="hidden" id="adminDbId">
+        <div class="form-group">
+          <label for="adminName">Full Name</label>
+          <input type="text" id="adminName" class="form-control" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label for="adminEmail">Email Address</label>
+          <input type="email" id="adminEmail" class="form-control" placeholder="admin2@university.com" required>
+        </div>
+        <div class="form-group" id="adminPasswordGroup">
+          <label for="adminPassword">Password <span id="adminPasswordHint" style="color:var(--text-muted);font-size:0.75rem;">(Required)</span></label>
+          <input type="password" id="adminPassword" class="form-control" placeholder="••••••••">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalAdmin')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveAdmin">Save Admin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Application Logic -->
+  <script>
+    // State
+    let currentUser = null;
+    let studentsCache = [];
+    let teachersCache = [];
+    let adminsCache = [];
+
+    // On Load: restore session if cached
+    window.addEventListener('DOMContentLoaded', () => {
+      const stored = localStorage.getItem('uni_user');
+      if (stored) {
+        try {
+          currentUser = JSON.parse(stored);
+          renderDashboard();
+        } catch (e) {
+          localStorage.removeItem('uni_user');
+          renderLogin();
+        }
+      } else {
+        renderLogin();
+      }
+    });
+
+    function fillAdminDemo() {
+      document.getElementById('loginEmail').value = 'admin@university.com';
+      document.getElementById('loginPassword').value = 'AdminPassword123';
+    }
+
+    // Login
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnLoginSubmit');
+
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          currentUser = data;
+          localStorage.setItem('uni_user', JSON.stringify(data));
+          showToast(`Welcome back, ${data.name}!`, 'success');
+          renderDashboard();
+        } else {
+          showToast(data.message || 'Invalid email or password.', 'error');
+        }
+      } catch (err) {
+        showToast('Network error connecting to the server.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    }
+
+    // Logout
+    async function handleLogout() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      } catch (e) {}
+      currentUser = null;
+      localStorage.removeItem('uni_user');
+      showToast('Logged out successfully.', 'success');
+      renderLogin();
+    }
+
+    function renderLogin() {
+      document.getElementById('loginView').classList.remove('hidden');
+      document.getElementById('dashboardView').classList.add('hidden');
+      document.getElementById('navUserArea').classList.add('hidden');
+      document.getElementById('loginPassword').value = '';
+    }
+
+    function renderDashboard() {
+      if (!currentUser) return renderLogin();
+
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('dashboardView').classList.remove('hidden');
+      document.getElementById('navUserArea').classList.remove('hidden');
+
+      document.getElementById('navUserName').textContent = currentUser.name;
+      document.getElementById('navUserEmail').textContent = currentUser.email;
+
+      const roleBadge = document.getElementById('navUserRole');
+      roleBadge.textContent = currentUser.role;
+      roleBadge.className = `role-badge role-${currentUser.role}`;
+
+      // Adjust Tab Visibility based on Role Permissions
+      const tabStudents = document.getElementById('tabBtnStudents');
+      const tabTeachers = document.getElementById('tabBtnTeachers');
+      const tabAdmins = document.getElementById('tabBtnAdmins');
+
+      tabStudents.classList.add('hidden');
+      tabTeachers.classList.add('hidden');
+      tabAdmins.classList.add('hidden');
+
+      if (currentUser.role === 'ADMIN') {
+        tabStudents.classList.remove('hidden');
+        tabTeachers.classList.remove('hidden');
+        tabAdmins.classList.remove('hidden');
+        switchTab('students');
+      } else if (currentUser.role === 'TEACHER') {
+        tabTeachers.classList.remove('hidden');
+        switchTab('teachers');
+      } else if (currentUser.role === 'STUDENT') {
+        tabStudents.classList.remove('hidden');
+        switchTab('students');
+      }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+
+      if (tab === 'students') {
+        document.getElementById('tabBtnStudents').classList.add('active');
+        document.getElementById('panelStudents').classList.remove('hidden');
+        loadStudents();
+      } else if (tab === 'teachers') {
+        document.getElementById('tabBtnTeachers').classList.add('active');
+        document.getElementById('panelTeachers').classList.remove('hidden');
+        loadTeachers();
+      } else if (tab === 'admins') {
+        document.getElementById('tabBtnAdmins').classList.add('active');
+        document.getElementById('panelAdmins').classList.remove('hidden');
+        loadAdmins();
+      }
+    }
+
+    // Generic API fetch wrapper with 401 handling
+    async function apiFetch(url, options = {}) {
+      options.credentials = 'include';
+      if (!options.headers) options.headers = {};
+      if (options.body && typeof options.body === 'object') {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(options.body);
+      }
+
+      const res = await fetch(url, options);
+      if (res.status === 401) {
+        showToast('Your session has expired. Please log in again.', 'error');
+        handleLogout();
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    // ==========================================
+    // STUDENTS CRUD
+    // ==========================================
+    async function loadStudents() {
+      const tbody = document.getElementById('studentsTableBody');
+      try {
+        const res = await apiFetch('/api/students');
+        if (res.ok) {
+          studentsCache = await res.json();
+          renderStudentsTable(studentsCache);
+        } else if (res.status === 403) {
+          tbody.innerHTML = `<tr><td colspan="6" class="empty-state" style="color:var(--danger)">Access Denied (403): Your role cannot access students.</td></tr>`;
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Failed to load students.</td></tr>`;
+      }
+    }
+
+    function renderStudentsTable(list) {
+      const tbody = document.getElementById('studentsTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No students found. Click "Add Student" to create one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td>#${s.id}</td>
+          <td><strong>${escapeHtml(s.studentId)}</strong></td>
+          <td>${escapeHtml(s.name)}</td>
+          <td>${escapeHtml(s.email)}</td>
+          <td><span style="background:#f1f5f9;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.8rem;">${escapeHtml(s.department)}</span></td>
+          <td>
+            <div class="action-cell">
+              <button class="btn btn-secondary btn-sm" onclick="editStudent(${s.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openStudentModal(student = null) {
+      document.getElementById('studentForm').reset();
+      document.getElementById('studentDbId').value = student ? student.id : '';
+      document.getElementById('studentModalTitle').textContent = student ? 'Edit Student' : 'Add New Student';
+
+      const passInput = document.getElementById('studentPassword');
+      const passHint = document.getElementById('studentPasswordHint');
+
+      if (student) {
+        document.getElementById('studentCode').value = student.studentId;
+        document.getElementById('studentName').value = student.name;
+        document.getElementById('studentEmail').value = student.email;
+        document.getElementById('studentDept').value = student.department;
+        passInput.required = false;
+        passHint.textContent = '(Leave empty to keep existing password)';
+      } else {
+        passInput.required = true;
+        passHint.textContent = '(Required)';
+      }
+
+      openModal('modalStudent');
+    }
+
+    function editStudent(id) {
+      const student = studentsCache.find(s => s.id === id);
+      if (student) openStudentModal(student);
+    }
+
+    async function submitStudentForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('studentDbId').value;
+      const isEdit = !!id;
+
+      const payload = {
+        studentId: document.getElementById('studentCode').value.trim(),
+        name: document.getElementById('studentName').value.trim(),
+        email: document.getElementById('studentEmail').value.trim(),
+        department: document.getElementById('studentDept').value.trim()
+      };
+
+      const pass = document.getElementById('studentPassword').value;
+      if (pass) payload.password = pass;
+
+      const url = isEdit ? `/api/students/${id}` : '/api/students';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const res = await apiFetch(url, { method, body: payload });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(isEdit ? 'Student updated successfully!' : 'Student registered successfully!', 'success');
+          closeModal('modalStudent');
+          loadStudents();
+        } else {
+          showToast(data.message || 'Operation failed', 'error');
+        }
+      } catch (err) {
+        showToast('Error saving student record.', 'error');
+      }
+    }
+
+    async function deleteStudent(id) {
+      if (!confirm('Are you sure you want to delete this student?')) return;
+      try {
+        const res = await apiFetch(`/api/students/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Student deleted successfully.', 'success');
+          loadStudents();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showToast(data.message || 'Delete operation failed (403 Forbidden).', 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting student.', 'error');
+      }
+    }
+
+    // ==========================================
+    // TEACHERS CRUD
+    // ==========================================
+    async function loadTeachers() {
+      const tbody = document.getElementById('teachersTableBody');
+      try {
+        const res = await apiFetch('/api/teachers');
+        if (res.ok) {
+          teachersCache = await res.json();
+          renderTeachersTable(teachersCache);
+        } else if (res.status === 403) {
+          tbody.innerHTML = `<tr><td colspan="7" class="empty-state" style="color:var(--danger)">Access Denied (403): Your role cannot access teachers.</td></tr>`;
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Failed to load teachers.</td></tr>`;
+      }
+    }
+
+    function renderTeachersTable(list) {
+      const tbody = document.getElementById('teachersTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No teachers found. Click "Add Teacher" to create one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(t => `
+        <tr>
+          <td>#${t.id}</td>
+          <td><strong>${escapeHtml(t.teacherId)}</strong></td>
+          <td>${escapeHtml(t.name)}</td>
+          <td>${escapeHtml(t.email)}</td>
+          <td><span style="background:#f1f5f9;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.8rem;">${escapeHtml(t.department)}</span></td>
+          <td>${escapeHtml(t.designation)}</td>
+          <td>
+            <div class="action-cell">
+              <button class="btn btn-secondary btn-sm" onclick="editTeacher(${t.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteTeacher(${t.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openTeacherModal(teacher = null) {
+      document.getElementById('teacherForm').reset();
+      document.getElementById('teacherDbId').value = teacher ? teacher.id : '';
+      document.getElementById('teacherModalTitle').textContent = teacher ? 'Edit Teacher' : 'Add New Teacher';
+
+      const passInput = document.getElementById('teacherPassword');
+      const passHint = document.getElementById('teacherPasswordHint');
+
+      if (teacher) {
+        document.getElementById('teacherCode').value = teacher.teacherId;
+        document.getElementById('teacherName').value = teacher.name;
+        document.getElementById('teacherEmail').value = teacher.email;
+        document.getElementById('teacherDept').value = teacher.department;
+        document.getElementById('teacherDesignation').value = teacher.designation;
+        passInput.required = false;
+        passHint.textContent = '(Leave empty to keep existing password)';
+      } else {
+        passInput.required = true;
+        passHint.textContent = '(Required)';
+      }
+
+      openModal('modalTeacher');
+    }
+
+    function editTeacher(id) {
+      const teacher = teachersCache.find(t => t.id === id);
+      if (teacher) openTeacherModal(teacher);
+    }
+
+    async function submitTeacherForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('teacherDbId').value;
+      const isEdit = !!id;
+
+      const payload = {
+        teacherId: document.getElementById('teacherCode').value.trim(),
+        name: document.getElementById('teacherName').value.trim(),
+        email: document.getElementById('teacherEmail').value.trim(),
+        department: document.getElementById('teacherDept').value.trim(),
+        designation: document.getElementById('teacherDesignation').value.trim()
+      };
+
+      const pass = document.getElementById('teacherPassword').value;
+      if (pass) payload.password = pass;
+
+      const url = isEdit ? `/api/teachers/${id}` : '/api/teachers';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const res = await apiFetch(url, { method, body: payload });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(isEdit ? 'Teacher updated successfully!' : 'Teacher registered successfully!', 'success');
+          closeModal('modalTeacher');
+          loadTeachers();
+        } else {
+          showToast(data.message || 'Operation failed', 'error');
+        }
+      } catch (err) {
+        showToast('Error saving teacher record.', 'error');
+      }
+    }
+
+    async function deleteTeacher(id) {
+      if (!confirm('Are you sure you want to delete this teacher?')) return;
+      try {
+        const res = await apiFetch(`/api/teachers/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Teacher deleted successfully.', 'success');
+          loadTeachers();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showToast(data.message || 'Delete operation failed (403 Forbidden).', 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting teacher.', 'error');
+      }
+    }
+
+    // ==========================================
+    // ADMINS CRUD
+    // ==========================================
+    async function loadAdmins() {
+      const tbody = document.getElementById('adminsTableBody');
+      try {
+        const res = await apiFetch('/api/admins');
+        if (res.ok) {
+          adminsCache = await res.json();
+          renderAdminsTable(adminsCache);
+        } else if (res.status === 403) {
+          tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="color:var(--danger)">Access Denied (403): Only Admins can view this directory.</td></tr>`;
+        }
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Failed to load administrators.</td></tr>`;
+      }
+    }
+
+    function renderAdminsTable(list) {
+      const tbody = document.getElementById('adminsTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No administrators found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(a => `
+        <tr>
+          <td>#${a.id}</td>
+          <td><strong>${escapeHtml(a.name)}</strong></td>
+          <td>${escapeHtml(a.email)}</td>
+          <td>
+            <div class="action-cell">
+              <button class="btn btn-secondary btn-sm" onclick="editAdmin(${a.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteAdmin(${a.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAdminModal(admin = null) {
+      document.getElementById('adminForm').reset();
+      document.getElementById('adminDbId').value = admin ? admin.id : '';
+      document.getElementById('adminModalTitle').textContent = admin ? 'Edit Admin' : 'Add New Admin';
+
+      const passInput = document.getElementById('adminPassword');
+      const passHint = document.getElementById('adminPasswordHint');
+
+      if (admin) {
+        document.getElementById('adminName').value = admin.name;
+        document.getElementById('adminEmail').value = admin.email;
+        passInput.required = false;
+        passHint.textContent = '(Leave empty to keep existing password)';
+      } else {
+        passInput.required = true;
+        passHint.textContent = '(Required)';
+      }
+
+      openModal('modalAdmin');
+    }
+
+    function editAdmin(id) {
+      const admin = adminsCache.find(a => a.id === id);
+      if (admin) openAdminModal(admin);
+    }
+
+    async function submitAdminForm(e) {
+      e.preventDefault();
+      const id = document.getElementById('adminDbId').value;
+      const isEdit = !!id;
+
+      const payload = {
+        name: document.getElementById('adminName').value.trim(),
+        email: document.getElementById('adminEmail').value.trim()
+      };
+
+      const pass = document.getElementById('adminPassword').value;
+      if (pass) payload.password = pass;
+
+      const url = isEdit ? `/api/admins/${id}` : '/api/admins';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const res = await apiFetch(url, { method, body: payload });
+        const data = await res.json();
+        if (res.ok) {
+          showToast(isEdit ? 'Admin updated successfully!' : 'Admin created successfully!', 'success');
+          closeModal('modalAdmin');
+          loadAdmins();
+        } else {
+          showToast(data.message || 'Operation failed', 'error');
+        }
+      } catch (err) {
+        showToast('Error saving admin account.', 'error');
+      }
+    }
+
+    async function deleteAdmin(id) {
+      if (!confirm('Are you sure you want to delete this administrator?')) return;
+      try {
+        const res = await apiFetch(`/api/admins/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Administrator deleted successfully.', 'success');
+          loadAdmins();
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showToast(data.message || 'Cannot delete admin.', 'error');
+        }
+      } catch (e) {
+        showToast('Error deleting admin.', 'error');
+      }
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    // Table Search Filter
+    function filterTable(tableId, query) {
+      const q = query.toLowerCase();
+      const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // Toast Notifications
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
+

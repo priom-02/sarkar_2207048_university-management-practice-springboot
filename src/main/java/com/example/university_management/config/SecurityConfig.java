@@ -96,6 +96,9 @@ public class SecurityConfig {
             )
             // Role-Based Access Control (RBAC) authorization rules
             .authorizeHttpRequests(auth -> auth
+                // Public frontend web assets (HTML, CSS, JS, favicon)
+                .requestMatchers("/", "/index.html", "/*.html", "/*.css", "/*.js", "/favicon.ico").permitAll()
+
                 // Public authentication endpoints (login, logout)
                 .requestMatchers("/api/auth/**").permitAll()
 
